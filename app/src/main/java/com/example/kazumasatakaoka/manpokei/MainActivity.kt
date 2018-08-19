@@ -31,6 +31,7 @@ import org.bitcoinj.wallet.Wallet
 
 
 class MainActivity : AppCompatActivity() ,SensorEventListener{
+    val realm = Realm.getDefaultInstance()
     private var numberOfStep = -1
     private var mSensorManager: SensorManager?= null
     private var mSensor: Sensor?=null
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
     override fun onResume() {
         super.onResume()
 
+        val walkdata = realm.where<Walkdata>().equalTo("id", walkdataId).findFirst()
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         val today: Date = Calendar.getInstance().getTime()
@@ -119,11 +121,11 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
                 editor.putInt("FES_INDEX", late_fes_index).apply()
             }
             /*
-            if (update_date != today) {
+            if (update_date != today) {*/
                 push(fes_index, walk_counter)
                 //server
                 editor.putString("UPDATE_DATE", today).apply()
-            }*/
+            //}
         }
     }
 
@@ -132,6 +134,11 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
         val editor = sharedPref?.edit()
         editor?.putInt(HOSUU_KEY, numberOfStep)
         editor?.commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 
     fun push(fes_index:Int, walk_counter:Int):String{
@@ -174,7 +181,6 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
     }
 
     fun saveData(txid:String){
-        val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             val maxId = realm.where<Walkdata>().max("id")
             val nextId = (maxId?.toLong() ?: 0L) + 1L

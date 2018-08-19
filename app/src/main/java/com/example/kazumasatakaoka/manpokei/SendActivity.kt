@@ -44,7 +44,8 @@ class SendActivity : AppCompatActivity() {
                     to,
                     sendAmount,
                     true
-            )}
+            )
+            alert("Transaction send") {  }.show()}
             else{
                 alert("Amount must be less than balance ") {  }.show()
             }

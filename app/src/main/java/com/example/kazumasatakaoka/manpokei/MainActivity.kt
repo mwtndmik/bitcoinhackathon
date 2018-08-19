@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
     override fun onResume() {
         super.onResume()
 
-        val walkdata = realm.where<Walkdata>().equalTo("id", walkdataId).findFirst()
+        //val walkdata = realm.where<Walkdata>().equalTo("id", walkdataId).findFirst()
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = pref.edit()
         val today: Date = Calendar.getInstance().getTime()
@@ -90,9 +90,7 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
         val late_fes_index: Int = 1
         val walk_counter = pref.getInt("WALK_COUNTER", 0)
 
-
-
-        val dir = File("context.filesDir")
+        val dir = this.filesDir
         val filePrefix = "testnet"
         val params = TestNet3Params()
         val kit = WalletAppKit(params, dir, filePrefix).apply {
@@ -124,7 +122,7 @@ class MainActivity : AppCompatActivity() ,SensorEventListener{
             if (update_date != today) {*/
                 push(fes_index, walk_counter)
                 //server
-                editor.putString("UPDATE_DATE", today).apply()
+                editor.putString("UPDATE_DATE", today.toString()).apply()
             //}
         }
     }
